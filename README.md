@@ -16,3 +16,6 @@ ct.delegate = self;
 ```
 
 具体的就看demo把，有问题的话，在简书直接留言，觉得还行， 麻烦给颗星星
+
+简书地址:
+https://www.jianshu.com/p/41bedfc43e0e
