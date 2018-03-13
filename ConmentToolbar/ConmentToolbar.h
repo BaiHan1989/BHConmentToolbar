@@ -16,6 +16,8 @@
 
 - (void)toolbar:(ConmentToolbar *)toolbar didClickSendButtonWithText:(NSString *)text;
 
+- (void)toolbarBecomeFirstResponder:(ConmentToolbar *)toolbar;
+
 @end
 
 

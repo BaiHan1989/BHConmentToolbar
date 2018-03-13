@@ -36,6 +36,13 @@
     self.textLb.text = text;
 }
 
+- (void)toolbarBecomeFirstResponder:(ConmentToolbar *)toolbar {
+    
+    // 这里可以处理一些逻辑，我的实际项目中，需要将tableView滚动到最顶部，类似于微信展示最底部的评论内容
+     
+    NSLog(@"成为第一响应者");
+}
+
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
 }

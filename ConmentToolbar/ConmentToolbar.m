@@ -209,4 +209,13 @@
     
 }
 
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
+    
+    if ([self.delegate respondsToSelector:@selector(toolbarBecomeFirstResponder:)]) {
+        [self.delegate toolbarBecomeFirstResponder:self];
+    }
+    
+    return YES;
+}
+
 @end
