@@ -31,6 +31,11 @@
  */
 @property (assign, nonatomic) CGFloat initY;
 
+/**
+ 第一次进入，记录初始值
+ */
+@property (assign, nonatomic) BOOL isFirst;
+
 
 @end
 
@@ -60,7 +65,7 @@
 
 - (void)setupUI {
     
-
+    self.isFirst = YES;
     self.maxNumbersOfLine = 4;
     self.backgroundColor = [UIColor colorWithRed:243/255.0 green:243/255.0 blue:243/255.0 alpha:1.0];
     self.placeholderLb.text = @"评论";
@@ -80,18 +85,18 @@
     self.textView.frame = CGRectMake(tvX, tvY, tvW, tvH);
     self.placeholderLb.frame = CGRectMake(12, tvY, tvW, tvH);
     
- 
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+    // 因为折行会重复调用该方法，而我们只需要一次该值
+    if (self.isFirst) {
         self.initTextViewH = self.textView.bounds.size.height;
         self.initY = self.frame.origin.y;
-    });
+    }
     
 }
 
 // 文本改变时候调用
 - (void)textDidChange {
 
+    self.isFirst = NO;
     // 如果textView 有文字 placeholder隐藏
     self.placeholderLb.hidden = self.textView.hasText;
     
