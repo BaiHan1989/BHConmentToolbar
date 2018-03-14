@@ -18,6 +18,9 @@
 
 - (void)toolbarBecomeFirstResponder:(ConmentToolbar *)toolbar;
 
+- (void)toolbar:(ConmentToolbar *)toolbar changeTextWithTextH:(NSInteger)textH;
+
+
 @end
 
 

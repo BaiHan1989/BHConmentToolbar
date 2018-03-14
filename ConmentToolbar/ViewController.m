@@ -43,6 +43,11 @@
     NSLog(@"成为第一响应者");
 }
 
+- (void)toolbar:(ConmentToolbar *)toolbar changeTextWithTextH:(NSInteger)textH {
+    // 这里计算出textH，根据实际逻辑来修改，其他控件高度，我的实际项目中，这个部分是调整tableView的transform
+    NSLog(@"textH --- %zd",textH);
+}
+
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
 }

@@ -134,6 +134,10 @@
             self.textView.frame = CGRectMake(tvX, tvY, tvW, tvH);
             
         }];
+        
+        if ([self.delegate respondsToSelector:@selector(toolbar:changeTextWithTextH:)]) {
+            [self.delegate toolbar:self changeTextWithTextH:(row - 1) * tvH];
+        }
        
         self.textView.scrollEnabled = NO;
     }
