@@ -26,21 +26,15 @@
 
 @interface ConmentToolbar : UIView
 
-@property (weak, nonatomic) id <ConmentToolbarDelegate> delegate;
+@property (nonatomic, weak) id <ConmentToolbarDelegate> delegate;
 
-/**
- 占位文字
- */
-@property (strong, nonatomic) NSString *placeholder;
+@property (nonatomic, strong) NSString *placeholder; //!< 占位文字
 
-/**
- 占位文字的颜色
- */
-@property (strong, nonatomic) UIColor *placeholderColor;
+@property (nonatomic, strong) UIColor *placeholderColor; //!< 占位文字的颜色
 
-/**
- 最大行数
- */
-@property (assign, nonatomic) NSInteger maxNumbersOfLine;
+@property (nonatomic, assign) NSInteger maxNumbersOfLine; //!< 最大行数
+
+@property (nonatomic, assign) CGFloat fontSize; //!< 字体大小
+
 
 @end

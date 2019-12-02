@@ -10,31 +10,19 @@
 
 @interface ConmentToolbar () <UITextViewDelegate>
 
-
-/**
- textView
- */
 @property (strong, nonatomic) UITextView *textView;
 
-/**
- 占位文字
- */
-@property (strong, nonatomic) UILabel *placeholderLb;
 
-/**
- textView的初始高度
- */
-@property (assign, nonatomic) CGFloat initTextViewH;
+@property (strong, nonatomic) UILabel *placeholderLb; //!< 占位文字
 
-/**
- toolbar初始Y值
- */
-@property (assign, nonatomic) CGFloat initY;
 
-/**
- 第一次进入，记录初始值
- */
-@property (assign, nonatomic) BOOL isFirst;
+@property (assign, nonatomic) CGFloat initTextViewH; //!< textView的初始高度
+
+
+@property (assign, nonatomic) CGFloat initY; //!< toolbar初始Y值
+
+
+@property (assign, nonatomic) BOOL isFirst; //!< 第一次进入，记录初始值
 
 
 @end
@@ -109,12 +97,15 @@
     
     // 计算行数 文字的高度 / 控件高度
     // 文字的总高度
+    
     CGFloat textH = ceil(textSize.height);
     CGFloat tvH = self.initTextViewH - self.textView.textContainerInset.top - self.textView.textContainerInset.bottom;
-    CGFloat row = ceil(textH / tvH);
-    
+    NSInteger row = ceil(textH / tvH);
+    if (!self.textView.hasText) { // 如果没有文字，行数为1
+        row = 1;
+    }
     NSLog(@"%f -- %f",textH,tvH);
-    NSLog(@"row --- %f",row);
+    NSLog(@"row --- %zd",row);
     
     if (row > self.maxNumbersOfLine) {
         self.textView.scrollEnabled = YES;
@@ -148,7 +139,10 @@
     if (!_textView) {
         
         UITextView *textView = [[UITextView alloc] init];
-        textView.font = [UIFont systemFontOfSize:14];
+        if (self.fontSize == 0) {
+            self.fontSize = 14;
+        }
+        textView.font = [UIFont systemFontOfSize:self.fontSize];
         textView.backgroundColor = [UIColor whiteColor];
         textView.scrollEnabled = NO;
         textView.layer.borderColor = [UIColor lightGrayColor].CGColor;
@@ -181,6 +175,12 @@
     _placeholder = placeholder;
     
     self.placeholderLb.text = placeholder;
+}
+
+- (void)setFontSize:(CGFloat)fontSize {
+    _fontSize = fontSize;
+    
+    self.textView.font = [UIFont systemFontOfSize:fontSize];
 }
 
 - (void)setPlaceholderColor:(UIColor *)placeholderColor {

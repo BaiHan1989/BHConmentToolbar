@@ -24,6 +24,7 @@
     ConmentToolbar *ct = [[ConmentToolbar alloc] init];
     ct.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 44, [UIScreen mainScreen].bounds.size.width, 44);
     ct.placeholder = @"哈哈哈";
+    ct.fontSize = 20;
     ct.placeholderColor = [UIColor greenColor];
     ct.maxNumbersOfLine = 3;
     ct.delegate = self;
