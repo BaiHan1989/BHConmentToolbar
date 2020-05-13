@@ -22,8 +22,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
     ConmentToolbar *ct = [[ConmentToolbar alloc] init];
-    ct.placeholder = @"哈哈哈";
     ct.fontSize = 30;
+    ct.placeholder = @"占位文字";
     ct.cursorColor = [UIColor redColor];
     ct.placeholderColor = [UIColor greenColor];
     ct.maxNumbersOfLine = 3;

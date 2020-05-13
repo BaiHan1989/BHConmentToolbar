@@ -26,6 +26,7 @@
 @property (assign, nonatomic) BOOL isFirst; //!< 第一次进入，记录初始值
 
 @property (nonatomic, assign) CGFloat singleLineHeight; //!< 单行文字的高度
+@property (nonatomic, assign) CGFloat initialHeight; //!< 评论条初始高度
 
 @end
 
@@ -58,7 +59,7 @@
     self.isFirst = YES;
     self.maxNumbersOfLine = 4;
     self.backgroundColor = [UIColor colorWithRed:243/255.0 green:243/255.0 blue:243/255.0 alpha:1.0];
-    self.placeholderLb.text = @"评论";
+    self.placeholderLb.text = @"";
     [self addSubview:self.textView];
     [self addSubview:self.placeholderLb];
     
@@ -70,12 +71,21 @@
     
     // 因为折行会重复调用该方法，而我们只需要一次该值
     if (self.isFirst) {
+        CGFloat w = [UIScreen mainScreen].bounds.size.width - 10;
+        CGSize maxSize = CGSizeMake(w, MAXFLOAT);
+        // 根据字体计算文字高度
+        CGSize textSize = [@"测试字体" boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : self.textView.font} context:nil].size;
         
+        CGFloat textHeight = ceil(textSize.height);
+        // 单行文字的高度
+        self.singleLineHeight = textHeight;
         // 设置评论条的frame
-        CGFloat height = self.fontSize + self.textView.textContainerInset.top + self.textView.textContainerInset.bottom + 20;
-        CGFloat y = [UIScreen mainScreen].bounds.size.height - height;
+        
+        // 评论条的初始高度
+        self.initialHeight = textHeight + self.textView.textContainerInset.top + self.textView.textContainerInset.bottom + 10;
+        CGFloat y = [UIScreen mainScreen].bounds.size.height - self.initialHeight;
         CGFloat width = [UIScreen mainScreen].bounds.size.width;
-        self.frame = CGRectMake(0, y, width, height);
+        self.frame = CGRectMake(0, y, width, self.initialHeight);
         
         self.initTextViewH = self.frame.size.height - 10;
         self.initY = self.frame.origin.y;
@@ -108,16 +118,12 @@
     // 文字的总高度
     
     CGFloat textH = ceil(textSize.height);
-    // 单行文字的高度
-    CGFloat tvH = self.initTextViewH - self.textView.textContainerInset.top - self.textView.textContainerInset.bottom;
-    NSInteger row = ceil(textH / tvH);
-    if (row == 1) {
-        self.singleLineHeight = textH;
-    }
+    
+    NSInteger row = ceil(textH / self.singleLineHeight);
     if (!self.textView.hasText) { // 如果没有文字，行数为1
         row = 1;
     }
-    NSLog(@"文字高度: %f -- textView高度: %f",textH,tvH);
+    NSLog(@"文字高度: %f -- 单行文字高度: %f",textH, self.singleLineHeight);
     NSLog(@"row --- %zd",row);
     
     // 如果文本的行数大于最大行数，文字可以滚动
@@ -127,8 +133,8 @@
         [UIView animateWithDuration:0.3 animations:^{
             // 修改toolBar的 y 和 height
             CGRect frame = self.frame;
-            frame.size.height = (self.fontSize + self.textView.textContainerInset.top + self.textView.textContainerInset.bottom + 20) + (self.singleLineHeight) * (row - 1);
-            frame.origin.y = self.initY - tvH * (row - 1);
+            frame.size.height = self.initialHeight + self.singleLineHeight * (row - 1);
+            frame.origin.y = self.initY - self.singleLineHeight * (row - 1);
             self.frame = frame;
             
             // 修改textView
@@ -141,7 +147,7 @@
         }];
         
         if ([self.delegate respondsToSelector:@selector(toolbar:changeTextWithTextH:)]) {
-            [self.delegate toolbar:self changeTextWithTextH:(row - 1) * tvH];
+            [self.delegate toolbar:self changeTextWithTextH:(row - 1) * self.singleLineHeight];
         }
        
         self.textView.scrollEnabled = NO;
@@ -199,6 +205,7 @@
     _fontSize = fontSize;
     
     self.textView.font = [UIFont systemFontOfSize:fontSize];
+    self.placeholderLb.font = self.textView.font;
 }
 
 - (void)setPlaceholderColor:(UIColor *)placeholderColor {
