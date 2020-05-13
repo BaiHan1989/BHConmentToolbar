@@ -1,21 +1,20 @@
 # BHConmentToolbar
-类似于微信的评论框，可以设置placeholder，可以折行。使用简单
+可以折行的评论条，可以设置placeholder，文字大小，占位文字颜色。操作简单
 
-
-这个demo的核心代码，和实现思路 在我的简书，就不再这再写一遍了
+评论条的高度根据文字大小动态改变，默认fontSize  = 14
 
 把如何使用的放在这吧！
-```
-ConmentToolbar *ct = [[ConmentToolbar alloc] init];
-ct.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 44, [UIScreen mainScreen].bounds.size.width, 44);
-ct.placeholder = @"哈哈哈";
-ct.placeholderColor = [UIColor greenColor];
-ct.maxNumbersOfLine = 3;
-ct.delegate = self;
-[self.view addSubview:ct];
+```objective-c
+    ConmentToolbar *ct = [[ConmentToolbar alloc] init];
+    ct.fontSize = 30;
+    ct.placeholder = @"占位文字";
+    ct.cursorColor = [UIColor redColor];
+    ct.placeholderColor = [UIColor greenColor];
+    ct.maxNumbersOfLine = 3;
+    ct.delegate = self;
+    [self.view addSubview:ct];
 ```
 
-具体的就看demo把，有问题的话，在简书直接留言，觉得还行， 麻烦给颗星星
+目前只是折行的基础功能，觉得还行， 麻烦给颗星星。
 
-简书地址:
-https://www.jianshu.com/p/41bedfc43e0e
+
