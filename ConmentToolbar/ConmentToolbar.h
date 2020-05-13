@@ -36,5 +36,6 @@
 
 @property (nonatomic, assign) CGFloat fontSize; //!< 字体大小
 
+@property (nonatomic, strong) UIColor *cursorColor; //!< 光标颜色
 
 @end

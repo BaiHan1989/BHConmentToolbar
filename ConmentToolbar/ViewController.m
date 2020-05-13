@@ -22,9 +22,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
     ConmentToolbar *ct = [[ConmentToolbar alloc] init];
-    ct.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 44, [UIScreen mainScreen].bounds.size.width, 44);
     ct.placeholder = @"哈哈哈";
-    ct.fontSize = 20;
+    ct.fontSize = 30;
+    ct.cursorColor = [UIColor redColor];
     ct.placeholderColor = [UIColor greenColor];
     ct.maxNumbersOfLine = 3;
     ct.delegate = self;
@@ -46,7 +46,7 @@
 
 - (void)toolbar:(ConmentToolbar *)toolbar changeTextWithTextH:(NSInteger)textH {
     // 这里计算出textH，根据实际逻辑来修改，其他控件高度，我的实际项目中，这个部分是调整tableView的transform
-    NSLog(@"textH --- %zd",textH);
+//    NSLog(@"textH --- %zd",textH);
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
@@ -64,7 +64,6 @@
     
     [UIView animateWithDuration:duration animations:^{
         self.view.transform = CGAffineTransformMakeTranslation(0, offsetY);
-        
     }];
 }
 

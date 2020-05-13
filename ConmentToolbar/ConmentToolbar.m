@@ -8,6 +8,7 @@
 
 #import "ConmentToolbar.h"
 
+
 @interface ConmentToolbar () <UITextViewDelegate>
 
 @property (strong, nonatomic) UITextView *textView;
@@ -24,6 +25,7 @@
 
 @property (assign, nonatomic) BOOL isFirst; //!< 第一次进入，记录初始值
 
+@property (nonatomic, assign) CGFloat singleLineHeight; //!< 单行文字的高度
 
 @end
 
@@ -64,19 +66,26 @@
 
 
 - (void)layoutSubviews {
-    
-    
-    CGFloat tvW = self.bounds.size.width - 10;
-    CGFloat tvH = self.bounds.size.height - 10;
-    CGFloat tvX = 5;
-    CGFloat tvY = (self.bounds.size.height - tvH) * 0.5;
-    self.textView.frame = CGRectMake(tvX, tvY, tvW, tvH);
-    self.placeholderLb.frame = CGRectMake(12, tvY, tvW, tvH);
+    [super layoutSubviews];
     
     // 因为折行会重复调用该方法，而我们只需要一次该值
     if (self.isFirst) {
-        self.initTextViewH = self.textView.bounds.size.height;
+        
+        // 设置评论条的frame
+        CGFloat height = self.fontSize + self.textView.textContainerInset.top + self.textView.textContainerInset.bottom + 20;
+        CGFloat y = [UIScreen mainScreen].bounds.size.height - height;
+        CGFloat width = [UIScreen mainScreen].bounds.size.width;
+        self.frame = CGRectMake(0, y, width, height);
+        
+        self.initTextViewH = self.frame.size.height - 10;
         self.initY = self.frame.origin.y;
+        
+        CGFloat tvW = self.bounds.size.width - 10;
+        CGFloat tvH = self.bounds.size.height - 10;
+        CGFloat tvX = 5;
+        CGFloat tvY = (self.bounds.size.height - tvH) * 0.5;
+        self.textView.frame = CGRectMake(tvX, tvY, tvW, tvH);
+        self.placeholderLb.frame = CGRectMake(12, tvY, tvW, tvH);
     }
     
 }
@@ -99,21 +108,26 @@
     // 文字的总高度
     
     CGFloat textH = ceil(textSize.height);
+    // 单行文字的高度
     CGFloat tvH = self.initTextViewH - self.textView.textContainerInset.top - self.textView.textContainerInset.bottom;
     NSInteger row = ceil(textH / tvH);
+    if (row == 1) {
+        self.singleLineHeight = textH;
+    }
     if (!self.textView.hasText) { // 如果没有文字，行数为1
         row = 1;
     }
-    NSLog(@"%f -- %f",textH,tvH);
+    NSLog(@"文字高度: %f -- textView高度: %f",textH,tvH);
     NSLog(@"row --- %zd",row);
     
+    // 如果文本的行数大于最大行数，文字可以滚动
     if (row > self.maxNumbersOfLine) {
         self.textView.scrollEnabled = YES;
     } else {
         [UIView animateWithDuration:0.3 animations:^{
             // 修改toolBar的 y 和 height
             CGRect frame = self.frame;
-            frame.size.height = 44 + tvH * (row - 1);
+            frame.size.height = (self.fontSize + self.textView.textContainerInset.top + self.textView.textContainerInset.bottom + 20) + (self.singleLineHeight) * (row - 1);
             frame.origin.y = self.initY - tvH * (row - 1);
             self.frame = frame;
             
@@ -138,22 +152,21 @@
 - (UITextView *)textView {
     if (!_textView) {
         
-        UITextView *textView = [[UITextView alloc] init];
+        _textView = [[UITextView alloc] init];
         if (self.fontSize == 0) {
             self.fontSize = 14;
         }
-        textView.font = [UIFont systemFontOfSize:self.fontSize];
-        textView.backgroundColor = [UIColor whiteColor];
-        textView.scrollEnabled = NO;
-        textView.layer.borderColor = [UIColor lightGrayColor].CGColor;
-        textView.layer.borderWidth = 1.0;
-        textView.layer.cornerRadius = 5;
-        textView.layer.masksToBounds = YES;
-        textView.returnKeyType = UIReturnKeySend;
-        textView.delegate = self;
-        textView.enablesReturnKeyAutomatically = YES;
-        _textView = textView;
-        
+        _textView.font = [UIFont systemFontOfSize:self.fontSize];
+        _textView.backgroundColor = [UIColor whiteColor];
+        _textView.scrollEnabled = NO;
+        _textView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+        _textView.layer.borderWidth = 1.0;
+        _textView.layer.cornerRadius = 5;
+        _textView.layer.masksToBounds = YES;
+        _textView.returnKeyType = UIReturnKeySend;
+        _textView.delegate = self;
+        _textView.tintColor = [UIColor orangeColor];
+        _textView.enablesReturnKeyAutomatically = YES;
     }
     
     return _textView;
@@ -162,18 +175,23 @@
 - (UILabel *)placeholderLb {
     if (!_placeholderLb) {
         
-        UILabel *placeholderLb = [[UILabel alloc] init];
-        placeholderLb.font = self.textView.font;
-        placeholderLb.textColor = [UIColor lightGrayColor];
-        _placeholderLb = placeholderLb;
+        _placeholderLb = [[UILabel alloc] init];
+        _placeholderLb.font = self.textView.font;
+        _placeholderLb.textColor = [UIColor lightGrayColor];
     }
     
     return _placeholderLb;
 }
 
+#pragma mark - Setter
+
+- (void)setCursorColor:(UIColor *)cursorColor {
+    _cursorColor = cursorColor;
+    self.textView.tintColor = cursorColor;
+}
+
 - (void)setPlaceholder:(NSString *)placeholder {
     _placeholder = placeholder;
-    
     self.placeholderLb.text = placeholder;
 }
 
@@ -188,6 +206,8 @@
     
     self.placeholderLb.textColor = placeholderColor;
 }
+
+
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
